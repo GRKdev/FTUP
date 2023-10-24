@@ -95,7 +95,7 @@ def main():
 
     # Creating JSON file and uploading into OpenAI Server
     if args.model == "gpt":
-        cost(args.file, args.epoch)
+        cost_gpt(args.file, args.epoch)
 
     file_id_name = create_update_jsonl_file(args.model, args.file)
     # Creating the Finetuning Job.
@@ -125,7 +125,7 @@ def check_model(model):
 
 
 def check_jsonl_file(file):
-    # checking with regex if the name its correct CS50 notes: https://cs50.harvard.edu/python/2022/notes/7/
+    # checking with regex if the name its correct.
     print(f"\nChecking if {file} is valid ...")
     csv_file = re.search(r"^\w+\.jsonl$", file)
 
@@ -260,11 +260,12 @@ def check_jsonl_gpt35(file):
             except (KeyError, json.JSONDecodeError) as e:
                 sys.exit(f"\nError decoding JSON on line {line_num}: {e} ❌")
 
-    # Initial dataset stats
+    # Checking format https://cookbook.openai.com/examples/chat_finetuning_data_prep
     print("Num examples:", len(dataset))
 
     format_errors = defaultdict(int)
 
+    # Check each example in the dataset
     for ex in dataset:
         if not isinstance(ex, dict):
             format_errors["data_type"] += 1
@@ -275,6 +276,7 @@ def check_jsonl_gpt35(file):
             format_errors["missing_messages_list"] += 1
             continue
 
+        # Check each message in the example (list) for correct format and content.
         for message in messages:
             if "role" not in message or "content" not in message:
                 format_errors["message_missing_key"] += 1
@@ -292,6 +294,7 @@ def check_jsonl_gpt35(file):
         if not any(message.get("role", None) == "assistant" for message in messages):
             format_errors["example_missing_assistant_message"] += 1
 
+    # Print out any errors found
     if format_errors:
         print("\nFound errors:")
         for k, v in format_errors.items():
@@ -304,7 +307,7 @@ def check_jsonl_gpt35(file):
 
 
 def check_jsonl_babbage(file):
-    print(f"\n·Checking if format {file} is valid for Babbage-002 training ...")
+    print(f"\nChecking if format {file} is valid for Babbage-002 training ...")
     data_path = file
     dataset = []
     # Load the dataset
@@ -351,8 +354,9 @@ def check_jsonl_babbage(file):
         return data_path
 
 
-# not exact!
-# simplified from https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb
+# Costumed version of https://cookbook.openai.com/examples/chat_finetuning_data_prep
+
+
 def num_tokens_from_messages(messages, tokens_per_message=3, tokens_per_name=1):
     num_tokens = 0
     for message in messages:
@@ -373,7 +377,7 @@ def num_assistant_tokens_from_messages(messages):
     return num_tokens
 
 
-def cost(file, epochs):
+def cost_gpt(file, epochs):
     with open(file, "r", encoding="utf-8") as f:
         dataset = [json.loads(line) for line in f]
 
