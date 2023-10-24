@@ -31,7 +31,7 @@ python your_script_name.py -k <API_KEY> -m <MODEL_NAME> -f <INPUT_FILE> [-s <SUF
 Arguments:
 - `-k, --key`: **Required.** API key. You can also use "env" to load the API key from an environment variable.
 - `-m, --model`: **Required.** Model to use. Options: `gpt` for `gpt-3.5-turbo-0613` or `bab` for `babbage-002`.
-- `-f, --file`: **Required.** Input data file (CSV or JSONL format).
+- `-f, --file`: **Required.** Input data file (JSONL format).
 - `-s, --suffix`: Optional. Add a suffix for your finetuned model. E.g., 'my-suffix-title-v-1'.
 - `-e, --epoch`: Optional. Number of epochs for training. Default is 3.
 

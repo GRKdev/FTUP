@@ -1,11 +1,5 @@
-os
-sys
 pyfiglet
-re
-time
 argparse
 openai
-json
-collections
-dotenv
+python-dotenv
 tiktoken
