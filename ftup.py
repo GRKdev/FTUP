@@ -19,14 +19,14 @@ figlet = Figlet()
 parser = argparse.ArgumentParser(
     description="FT-UP uploading script for OpenAI FineTuning. Babbage and GPT-3.5"
 )
-# Using argparse to do command lines, Documentation https://docs.python.org/3/library/argparse.html & https://cs50.harvard.edu/python/2022/notes/9/#argparse
+# Using argparse to do command lines, Documentation https://docs.python.org/3/library/argparse.html
 
 parser.add_argument(
     "-k",
     "--key",
     help="Usage: -k <key> or --key <key>. This argument is used to pass the API key.",
+    default="env",
     type=str,
-    required=True,
 )
 parser.add_argument(
     "-m",
@@ -70,7 +70,7 @@ def main():
         # Checking the OpenAI API Key
         if "env" in args.key:
             openai.api_key = os.getenv("OPENAI_API_KEY")
-            print("Enviroment API Key ✔️")
+            print(check_key(openai.api_key))
 
         else:
             print(check_key(args.key))
@@ -78,6 +78,9 @@ def main():
 
     except ValueError as e:
         sys.exit(e)
+
+    except TypeError:
+        sys.exit("Please check if OPENAI_API_KEY is set in .env file ⚠️")
 
     try:
         # Checking the Model name form arguments
@@ -93,18 +96,16 @@ def main():
     except (ValueError, FileNotFoundError) as e:
         sys.exit(e)
 
-    # Creating JSON file and uploading into OpenAI Server
-    if args.model == "gpt":
-        cost_gpt(args.file, args.epoch)
+    # Creating the JSONL file and storing the file id name
+    file_id_name = create_update_jsonl_file(args.model, args.file, args.epoch)
 
-    file_id_name = create_update_jsonl_file(args.model, args.file)
     # Creating the Finetuning Job.
     update_ft_job(file_id_name, args.model, args.suffix, args.epoch)
 
 
 def check_key(key):
     # Checking key if not 51 lenght or starts with sk- and charcaters exit the program, if good -> set api key to openai module
-    print(f"Checking API key: {key} ...")
+    print(f"Checking API key: ...")
     match = re.search(r"^sk-[a-zA-Z0-9]+$", key)
     if match is None or len(key) != 51:
         raise ValueError(
@@ -140,7 +141,7 @@ def check_jsonl_file(file):
     return "JSON File ✔️"
 
 
-def create_update_jsonl_file(model, file):
+def create_update_jsonl_file(model, file, epoch):
     # Use the correct function to change csv into jsonl depending on model selected.
     if model == "gpt":
         jsonl_file_path = check_jsonl_gpt35(file)
@@ -155,6 +156,10 @@ def create_update_jsonl_file(model, file):
         )
         file_id_name = response["id"]
         print(f"File ID: {file_id_name} ✔️")
+
+        # Creating JSON file and uploading into OpenAI Server
+        if model == "gpt":
+            cost_gpt(file, epoch)
 
     # Exceptions we could have, from OpenAI Documentation: https://platform.openai.com/docs/guides/error-codes/python-library-error-types
     except openai.error.APIError as e:

@@ -70,16 +70,17 @@ The script will load this key if `-k env` is passed as an argument.
 - [ ] Cancel the training with command line.
 
 ```terminal
-  __  ______ _______            _    _ _____   __  
- / / |  ____|__   __|          | |  | |  __ \  \ \ 
+  __  ______ _______            _    _ _____   __
+ / / |  ____|__   __|          | |  | |  __ \  \ \
 | |  | |__     | |     ______  | |  | | |__) |  | |
 | |  |  __|    | |    |______| | |  | |  ___/   | |
 | |  | |       | |             | |__| | |       | |
 | |  |_|       |_|              \____/|_|       | |
- \_\                                           /_/ 
+ \_\                                           /_/
 
 
-Enviroment API Key ✔️
+Checking API key: ...
+API Key ✔️
 
 Checking model: gpt ...
 Model ✔️
@@ -87,16 +88,23 @@ Model ✔️
 Checking if train_gpt3_5.jsonl is valid ...
 JSON File ✔️
 
-Dataset has ~15153 tokens that will be charged for during training
-You'll train for 3 epochs on this dataset
-By default, you'll be charged for ~45459 tokens
-Total cost: $0.3637 💰
-
-Checking if format train_gpt3_5.jsonl is valid for GPT-3.5 training ...
+·Checking if format train_gpt3_5.jsonl is valid for GPT-3.5 training ...
 Num examples: 225
 JSONL correct format ✔️
 
 Uploading jsonl train file ...
+File ID: file-abcd123 ✔️
 
-Incorrect API key provided: sk-vBSPQ***************************************Ff00. You can find your API key at https://platform.openai.com/account/api-keys. ⚠️
+Dataset has ~15153 tokens that will be charged for during training
+You'll train for 1 epochs on this dataset
+By default, you'll be charged for ~15153 tokens
+Total cost: $0.1212 💰
+
+Creating a finetuning job ...
+Fintetuning job id: ftjob-abc123 ✔️
+
+Status: succeeded
+Finetuning succeeded! ☑️
+Finetune model: ft:gpt-3.5-turbo:openai:custom-model-name:7p4lURe
+
 ```
