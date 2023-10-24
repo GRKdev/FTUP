@@ -43,10 +43,10 @@ OPENAI_API_KEY=your_api_key_here
 The script will load this key if `-k env` is passed as an argument.
 
 ## Functions:
-- `check_key(key)`: Validates the OpenAI API key.
+- `check_key(key)`: Validates format for OpenAI API key.
 - `check_model(model)`: Validates the model name.
-- `check_jsonl_file(file)`: Checks if the provided file has a valid JSONL format.
-- `create_update_jsonl_file(model, file)`: Converts CSV to JSONL format.
+- `check_jsonl_file(file)`: Checks if the provided file has a valid JSONL name and if it exists.
+- `create_update_jsonl_file(model, file)`: Check if JSONL have a correct format and uploads file to OpenAI.
 - `update_ft_job(file_id_name, model, suffix, epoch)`: Creates or updates the finetuning job on OpenAI.
 - `check_jsonl_gpt35(file)`: Validates the format for GPT-3.5 training.
 - `check_jsonl_babbage(file)`: Validates the format for Babbage-002 training.
@@ -56,7 +56,14 @@ The script will load this key if `-k env` is passed as an argument.
 - Ensure your data adheres to OpenAI's data format guidelines for finetuning.
 - Monitor your OpenAI dashboard to keep track of your usage and costs.
 
-```bash
+## References:
+1. [OpenAI Documentation](https://platform.openai.com/docs/introduction)
+3. [OpenAI Cookbook - FineTuning](https://cookbook.openai.com/examples/chat_finetuning_data_prep)
+2. [Python Argparse Library](https://docs.python.org/3/library/argparse.html)
+4. [pyfiglet Documentation](https://github.com/pwaller/pyfiglet)
+5. [tiktoken Library](https://github.com/openai/tiktoken)
+
+```terminal
   __  ______ _______            _    _ _____   __  
  / / |  ____|__   __|          | |  | |  __ \  \ \ 
 | |  | |__     | |     ______  | |  | | |__) |  | |
