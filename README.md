@@ -40,7 +40,7 @@ Store your API key in a `.env` file in the format:
 ```
 OPENAI_API_KEY=your_api_key_here
 ```
-The script will load this key if `-k env` is passed as an argument.
+The script will load by default this key if not `-k / --key` is passed as an argument.
 
 ## Functions:
 - `check_key(key)`: Validates format for OpenAI API key.
@@ -68,6 +68,8 @@ The script will load this key if `-k env` is passed as an argument.
 - [ ] Adding Token and cost for Babbage model
 - [ ] Automate for creating train and validation files
 - [ ] Cancel the training with command line.
+
+## Terminal Output Example:
 
 ```terminal
 $ python ftup.py --key your_api_key_here --file train_gpt3_5.jsonl --model gpt --epoch 1 --suffix custom-model-name
