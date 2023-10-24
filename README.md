@@ -24,7 +24,7 @@ pip install requirements.txt
 
 ## Usage:
 
-```bash
+```terminal
 python your_script_name.py -k <API_KEY> -m <MODEL_NAME> -f <INPUT_FILE> [-s <SUFFIX>] [-e <EPOCHS>]
 ```
 
@@ -62,6 +62,12 @@ The script will load this key if `-k env` is passed as an argument.
 2. [Python Argparse Library](https://docs.python.org/3/library/argparse.html)
 4. [pyfiglet Documentation](https://github.com/pwaller/pyfiglet)
 5. [tiktoken Library](https://github.com/openai/tiktoken)
+
+## Next Features:
+
+- [ ] Adding Token and cost for Babbage model
+- [ ] Automate for creating train and validation files
+- [ ] Cancel the training with command line.
 
 ```terminal
   __  ______ _______            _    _ _____   __  
