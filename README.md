@@ -25,11 +25,11 @@ pip install requirements.txt
 ## Usage:
 
 ```terminal
-python your_script_name.py -k <API_KEY> -m <MODEL_NAME> -f <INPUT_FILE> [-s <SUFFIX>] [-e <EPOCHS>]
+python your_script_name.py [-k <API_KEY>] -m <MODEL_NAME> -f <INPUT_FILE> [-s <SUFFIX>] [-e <EPOCHS>]
 ```
 
 Arguments:
-- `-k, --key`: **Required.** API key. You can also use "env" to load the API key from an environment variable.
+- `-k, --key`: **Optional.** API key. Optional argument, but required in default env to have an API key in enviroment. OPENAI_API_KEY
 - `-m, --model`: **Required.** Model to use. Options: `gpt` for `gpt-3.5-turbo-0613` or `bab` for `babbage-002`.
 - `-f, --file`: **Required.** Input data file (JSONL format).
 - `-s, --suffix`: Optional. Add a suffix for your finetuned model. E.g., 'my-suffix-title-v-1'.
@@ -70,6 +70,7 @@ The script will load this key if `-k env` is passed as an argument.
 - [ ] Cancel the training with command line.
 
 ```terminal
+$ python ftup.py -f train_gpt3_5.jsonl -m gpt -e 1
   __  ______ _______            _    _ _____   __
  / / |  ____|__   __|          | |  | |  __ \  \ \
 | |  | |__     | |     ______  | |  | | |__) |  | |
@@ -106,5 +107,4 @@ Fintetuning job id: ftjob-abc123 ✔️
 Status: succeeded
 Finetuning succeeded! ☑️
 Finetune model: ft:gpt-3.5-turbo:openai:custom-model-name:7p4lURe
-
 ```

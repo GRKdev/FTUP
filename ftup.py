@@ -24,7 +24,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     "-k",
     "--key",
-    help="Usage: -k <key> or --key <key>. This argument is used to pass the API key.",
+    help="Usage: -k <key> or --key <key>. This argument is used to pass the API key. For env: default,must have env file with OPENAI_API_KEY=your_api_key_here",
     default="env",
     type=str,
 )
