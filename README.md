@@ -70,7 +70,9 @@ The script will load this key if `-k env` is passed as an argument.
 - [ ] Cancel the training with command line.
 
 ```terminal
-$ python ftup.py -f train_gpt3_5.jsonl -m gpt -e 1
+$ python ftup.py --key your_api_key_here --file train_gpt3_5.jsonl --model gpt --epoch 1 --suffix custom-model-name
+or
+$ python ftup.py -f train_gpt3_5.jsonl -m gpt -e 1 -s custom-model-name
   __  ______ _______            _    _ _____   __
  / / |  ____|__   __|          | |  | |  __ \  \ \
 | |  | |__     | |     ______  | |  | | |__) |  | |
