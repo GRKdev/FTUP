@@ -105,29 +105,29 @@ def main():
 
 def check_key(key):
     # Checking key if not 51 lenght or starts with sk- and charcaters exit the program, if good -> set api key to openai module
-    print(f"Checking API key: ...")
+    print(f"Checking API key format ...")
     match = re.search(r"^sk-[a-zA-Z0-9]+$", key)
     if match is None or len(key) != 51:
         raise ValueError(
             "\nInvalid format API key, You can find your API key at https://platform.openai.com/account/api-keys ⚠️"
         )
     else:
-        return "API Key ✔️"
+        return "- API Key ✔️"
 
 
 def check_model(model):
     # checking the model if not exit the program
-    print(f"\nChecking model: {model} ...")
+    print(f"\nChecking model ...")
 
     if not model in ["bab", "gpt"]:
         raise ValueError("\nInvalid model name ⚠️\nUsage: 'gpt' or 'bab'")
     else:
-        return "Model ✔️"
+        return f"- Model {model} ✔️"
 
 
 def check_jsonl_file(file):
     # checking with regex if the name its correct.
-    print(f"\nChecking if {file} is valid ...")
+    print(f"\nChecking if jsonl is valid ...")
     csv_file = re.search(r"^\w+\.jsonl$", file)
 
     if csv_file is None:
@@ -138,7 +138,7 @@ def check_jsonl_file(file):
         # Need it to import os to check if file exists wen we had match
         raise FileNotFoundError(f"\nFile {file} does not exist ⚠️")
 
-    return "JSON File ✔️"
+    return f"- JSON File {file} ✔️"
 
 
 def create_update_jsonl_file(model, file, epoch):
@@ -157,7 +157,7 @@ def create_update_jsonl_file(model, file, epoch):
         file_id_name = response["id"]
         print(f"File ID: {file_id_name} ✔️")
 
-        # Creating JSON file and uploading into OpenAI Server
+        #  if model is gpt, we check the cost of the training
         if model == "gpt":
             cost_gpt(file, epoch)
 
@@ -207,7 +207,7 @@ def update_ft_job(file_id_name, model, suffix, epoch):
     id = response["id"]
     # Storing Fine Tuning Job Name
 
-    print(f"Fintetuning job id: {id} ✔️\n")
+    print(f"- Fintetuning job id: {id} ✔️\n")
 
     while True:
         # Creating a loop for check the status of the training job until ends, cancelled or failed.
@@ -248,7 +248,7 @@ def update_ft_job(file_id_name, model, suffix, epoch):
 
 
 def check_jsonl_gpt35(file):
-    print(f"\n·Checking if format {file} is valid for GPT-3.5 training ...")
+    print(f"\nChecking if jsonl format is valid for GPT-3.5 training ...")
 
     data_path = file
     dataset = []
@@ -266,7 +266,7 @@ def check_jsonl_gpt35(file):
                 sys.exit(f"\nError decoding JSON on line {line_num}: {e} ❌")
 
     # Checking format https://cookbook.openai.com/examples/chat_finetuning_data_prep
-    print("Num examples:", len(dataset))
+    print("- Num examples:", len(dataset))
 
     format_errors = defaultdict(int)
 
@@ -307,12 +307,12 @@ def check_jsonl_gpt35(file):
         sys.exit("Not valid data format for GPT-3.5 training. Exiting... ❌\n")
 
     else:
-        print("JSONL correct format ✔️")
+        print(f"- JSONL {file} correct format ✔️")
         return data_path
 
 
 def check_jsonl_babbage(file):
-    print(f"\nChecking if format {file} is valid for Babbage-002 training ...")
+    print(f"\nChecking if jsonl format is valid for Babbage-002 training ...")
     data_path = file
     dataset = []
     # Load the dataset
@@ -324,8 +324,7 @@ def check_jsonl_babbage(file):
                 sys.exit(f"\nError decoding JSON on line {line_num}: {e} ❌")
 
     # Initial dataset stats
-    print("Num examples:", len(dataset))
-    print("First example:", dataset[0])
+    print("- Num examples:", len(dataset))
 
     format_errors = defaultdict(int)
 
@@ -355,13 +354,11 @@ def check_jsonl_babbage(file):
             print(f"{k}: {v}")
         sys.exit("Not valid data format for Babbage-002. Exiting... ❌")
     else:
-        print("JSONL correct format ✔️")
+        print(f"- JSONL {file} correct format ✔️")
         return data_path
 
 
 # Costumed version of https://cookbook.openai.com/examples/chat_finetuning_data_prep
-
-
 def num_tokens_from_messages(messages, tokens_per_message=3, tokens_per_name=1):
     num_tokens = 0
     for message in messages:
@@ -403,19 +400,6 @@ def cost_gpt(file, epochs):
         assistant_message_lens.append(num_assistant_tokens_from_messages(messages))
 
     MAX_TOKENS_PER_EXAMPLE = 4096
-
-    TARGET_EPOCHS = 15
-    MIN_TARGET_EXAMPLES = 100
-    MAX_TARGET_EXAMPLES = 25000
-    MIN_DEFAULT_EPOCHS = 1
-    MAX_DEFAULT_EPOCHS = 25
-
-    n_epochs = epochs
-    n_train_examples = len(dataset)
-    if n_train_examples * TARGET_EPOCHS < MIN_TARGET_EXAMPLES:
-        n_epochs = min(MAX_DEFAULT_EPOCHS, MIN_TARGET_EXAMPLES // n_train_examples)
-    elif n_train_examples * TARGET_EPOCHS > MAX_TARGET_EXAMPLES:
-        n_epochs = max(MIN_DEFAULT_EPOCHS, MAX_TARGET_EXAMPLES // n_train_examples)
 
     n_billing_tokens_in_dataset = sum(
         min(MAX_TOKENS_PER_EXAMPLE, length) for length in convo_lens
