@@ -11,11 +11,11 @@ This script helps to automate the process of preparing data for finetuning on Op
 
 ## Requirements:
 - Python 3
-- External libraries: `pyfiglet`, `openai`, `tiktoken`, `dotenv`, `argparse`, `json`, `re`, `os`, `sys`, `time`
+- External libraries: `pyfiglet`, `openai`, `tiktoken`, `dotenv`, `argparse`, `json`, `re`, `os`, `sys`, `time`, `clint`
 
 To install the required libraries:
 ```bash
-pip install pyfiglet openai tiktoken python-dotenv argparse
+pip install pyfiglet openai tiktoken python-dotenv argparse clint
 ```
 or
 ```bash
@@ -35,12 +35,12 @@ Arguments:
 - `-s, --suffix`: Optional. Add a suffix for your finetuned model. E.g., 'my-suffix-title-v-1'.
 - `-e, --epoch`: Optional. Number of epochs for training. Default is 3.
 
-## Environment Variables:
+## Environment Variables (optional):
 Store your API key in a `.env` file in the format:
 ```
 OPENAI_API_KEY=your_api_key_here
 ```
-The script will load by default this key if not `-k / --key` is passed as an argument.
+The script will load by default this key if not `-k / --key` passed as an argument.
 
 ## Functions:
 - `check_key(key)`: Validates format for OpenAI API key.
@@ -67,7 +67,7 @@ The script will load by default this key if not `-k / --key` is passed as an arg
 
 - [ ] Adding Token and cost for Babbage model
 - [ ] Automate for creating train and validation files
-- [ ] Cancel the training with command line.
+- [x] Cancel training with command line.
 
 ## Terminal Output Example:
 

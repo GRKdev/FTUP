@@ -10,7 +10,8 @@ from collections import defaultdict
 from dotenv import load_dotenv
 import tiktoken
 from clint.textui import colored
-
+import keyboard
+import threading
 
 encoding = tiktoken.get_encoding("cl100k_base")
 
@@ -113,7 +114,7 @@ def check_key(key):
             "\nInvalid format API key, You can find your API key at https://platform.openai.com/account/api-keys ⚠️"
         )
     else:
-        return "- API Key ✔️"
+        return colored.green("- API Key")
 
 
 def check_model(model):
@@ -123,7 +124,7 @@ def check_model(model):
     if not model in ["bab", "gpt"]:
         raise ValueError("\nInvalid model name ⚠️\nUsage: 'gpt' or 'bab'")
     else:
-        return f"- Model {model} ✔️"
+        return colored.green(f"- Model {model}")
 
 
 def check_jsonl_file(file):
@@ -139,7 +140,7 @@ def check_jsonl_file(file):
         # Need it to import os to check if file exists wen we had match
         raise FileNotFoundError(f"\nFile {file} does not exist ⚠️")
 
-    return f"- JSON File {file} ✔️"
+    return colored.green(f"- JSON File {file}")
 
 
 def create_update_jsonl_file(model, file, epoch):
@@ -156,7 +157,7 @@ def create_update_jsonl_file(model, file, epoch):
             file=open(jsonl_file_path, "rb"), purpose="fine-tune"
         )
         file_id_name = response["id"]
-        print(f"File ID: {file_id_name} ✔️")
+        print(f"- File ID: {colored.green(file_id_name)}")
 
         #  if model is gpt, we check the cost of the training
         if model == "gpt":
@@ -185,6 +186,16 @@ def create_update_jsonl_file(model, file, epoch):
     return file_id_name
 
 
+def check_for_cancel(job_id):
+    keyboard.wait("x")
+    try:
+        openai.FineTuningJob.cancel(job_id)
+        print("\nFine-tuning job was cancelled by user. ❌")
+
+    except Exception as e:
+        print(f"\nError cancelling the fine-tuning: {e}")
+
+
 def update_ft_job(file_id_name, model, suffix, epoch):
     # Calling nested function update json and storing the file id name
 
@@ -208,7 +219,12 @@ def update_ft_job(file_id_name, model, suffix, epoch):
     id = response["id"]
     # Storing Fine Tuning Job Name
 
-    print(f"- Fintetuning job id: {id} ✔️\n")
+    print(f"- Fintetuning job id: {colored.green(id)}\n")
+
+    ft_model_name = None
+
+    cancel_thread = threading.Thread(target=check_for_cancel, args=(id,))
+    cancel_thread.start()
 
     while True:
         # Creating a loop for check the status of the training job until ends, cancelled or failed.
@@ -219,17 +235,17 @@ def update_ft_job(file_id_name, model, suffix, epoch):
             ft_model_name = response_job["fine_tuned_model"]
             print(f"\r{' '*50}", end="")
             # Asked the Duck: Printing 50 charcaters to erase the line
-            print(f"\rStatus: {status}", end="")
+            print(f"\rStatus: {status} (Press 'x' to cancel)", end="")
             # With \r we can Overwrite the line, preventing new lines.
 
             if status in ["succeeded"]:
                 # Breaking the loop and printing result
-                print(f"\nFinetuning {status}! ☑️\nFinetune model: {ft_model_name}\n")
-                break
+                sys.exit(
+                    f"\nFinetuning {colored.green(status)}! ☑️\nFinetune model: {ft_model_name}\n"
+                )
             elif status in ["failed", "cancelled"]:
                 # Breaking the loop and printing result
-                print(f"\nFinetuning {status}! ❌\n")
-                break
+                sys.exit(f"\nFinetuning {colored.red(status)}! ❌\n")
 
         # Code snippets from Documentation OpenAI
         except openai.error.APIError as e:
@@ -267,7 +283,7 @@ def check_jsonl_gpt35(file):
                 sys.exit(f"\nError decoding JSON on line {line_num}: {e} ❌")
 
     # Checking format https://cookbook.openai.com/examples/chat_finetuning_data_prep
-    print("- Num examples:", len(dataset))
+    print("- Num examples:", colored.yellow(len(dataset)))
 
     format_errors = defaultdict(int)
 
@@ -302,13 +318,13 @@ def check_jsonl_gpt35(file):
 
     # Print out any errors found
     if format_errors:
-        print("\nFound errors:")
+        print(colored.red("\nFound errors:"))
         for k, v in format_errors.items():
             print(f"{k}: {v}")
         sys.exit("Not valid data format for GPT-3.5 training. Exiting... ❌\n")
 
     else:
-        print(f"- JSONL {file} correct format ✔️")
+        print(colored.green(f"- JSONL {file} correct format"))
         return data_path
 
 
@@ -322,10 +338,12 @@ def check_jsonl_babbage(file):
             try:
                 dataset.append(json.loads(line))
             except (KeyError, json.JSONDecodeError) as e:
-                sys.exit(f"\nError decoding JSON on line {line_num}: {e} ❌")
+                sys.exit(
+                    f"\nError decoding JSON on line {colored.red(line_num)}: {e} ❌"
+                )
 
     # Initial dataset stats
-    print("- Num examples:", len(dataset))
+    print("- Num examples:", colored.yellow(len(dataset)))
 
     format_errors = defaultdict(int)
 
@@ -350,12 +368,12 @@ def check_jsonl_babbage(file):
             format_errors["invalid_completion_type"] += 1
 
     if format_errors:
-        print("\nFound errors:")
+        print(colored.red("\nFound errors:"))
         for k, v in format_errors.items():
             print(f"{k}: {v}")
         sys.exit("Not valid data format for Babbage-002. Exiting... ❌")
     else:
-        print(f"- JSONL {file} correct format ✔️")
+        print(colored.green(f"- JSONL {file} correct format"))
         return data_path
 
 
@@ -412,9 +430,9 @@ def cost_gpt(file, epochs):
     print(
         f"\nDataset has ~{n_billing_tokens_in_dataset} tokens that will be charged for during training"
     )
-    print(f"You'll train for {epochs} epochs on this dataset")
-    print(f"By default, you'll be charged for ~{total_tokens} tokens")
-    print(f"Total cost: ${total_cost:.4f} 💰")
+    print(f"You'll train for {colored.yellow(epochs)} epochs on this dataset")
+    print(f"By default, you'll be charged for ~{colored.yellow(total_tokens)} tokens")
+    print(f"Total cost: {colored.yellow(f'${total_cost:.4f}')}" + " 💰")
 
 
 if __name__ == "__main__":
