@@ -75,16 +75,14 @@ The script will load by default this key if not `-k / --key` is passed as an arg
 $ python ftup.py --key your_api_key_here --file train_gpt3_5.jsonl --model gpt --epoch 1 --suffix custom-model-name
 or
 $ python ftup.py -f train_gpt3_5.jsonl -m gpt -e 1 -s custom-model-name
-  __  ______ _______            _    _ _____   __
- / / |  ____|__   __|          | |  | |  __ \  \ \
-| |  | |__     | |     ______  | |  | | |__) |  | |
-| |  |  __|    | |    |______| | |  | |  ___/   | |
-| |  | |       | |             | |__| | |       | |
-| |  |_|       |_|              \____/|_|       | |
- \_\                                           /_/
+    ____________            __  ______ 
+   / ____/_  __/           / / / / __ \
+  / /_    / /    ______   / / / / /_/ /
+ / __/   / /    /_____/  / /_/ / ____/ 
+/_/     /_/              \____/_/  
 
 
-Checking API key: ...
+Checking API key ...
 - API Key ✔️
 
 Checking model ...

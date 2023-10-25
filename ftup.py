@@ -9,6 +9,7 @@ import json
 from collections import defaultdict
 from dotenv import load_dotenv
 import tiktoken
+from clint.textui import colored
 
 
 encoding = tiktoken.get_encoding("cl100k_base")
@@ -63,8 +64,8 @@ def main():
     args = parser.parse_args()
 
     # Setting Tittle with Figlet
-    figlet.setFont(font="big")
-    print(figlet.renderText("( FT - UP )"))
+    figlet.setFont(font="slant")
+    print(colored.red(figlet.renderText("FT - UP")))
 
     try:
         # Checking the OpenAI API Key

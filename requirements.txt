@@ -3,3 +3,4 @@ argparse
 openai
 python-dotenv
 tiktoken
+clint
