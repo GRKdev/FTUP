@@ -83,20 +83,20 @@ $ python ftup.py -f train_gpt3_5.jsonl -m gpt -e 1 -s custom-model-name
 
 
 Checking API key ...
-- API Key ✔️
+- API Key
 
 Checking model ...
-- Model gpt ✔️
+- Model gpt
 
 Checking if jsonl is valid ...
-- JSON File train_gpt3_5.jsonl ✔️
+- JSON File train_gpt3_5.jsonl
 
 Checking if jsonl format is valid for GPT-3.5 training ...
 - Num examples: 225
-- JSONL train_gpt3_5.jsonl correct format ✔️
+- JSONL train_gpt3_5.jsonl correct format
 
 Uploading jsonl train file ...
-- File ID: file-abcd123 ✔️
+- File ID: file-abcd123
 
 Dataset has ~15153 tokens that will be charged for during training
 You'll train for 1 epochs on this dataset
@@ -104,7 +104,7 @@ By default, you'll be charged for ~15153 tokens
 Total cost: $0.1212 💰
 
 Creating a finetuning job ...
-- Fintetuning job id: ftjob-abc123 ✔️
+- Fintetuning job id: ftjob-abc123
 
 Status: succeeded
 Finetuning succeeded! ☑️
