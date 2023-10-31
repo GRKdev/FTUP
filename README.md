@@ -25,7 +25,7 @@ pip install requirements.txt
 ## Usage:
 
 ```terminal
-python your_script_name.py [-k <API_KEY>] -m <MODEL_NAME> -f <INPUT_FILE> [-s <SUFFIX>] [-e <EPOCHS>]
+python ftup.py [-k <API_KEY>] -m <MODEL_NAME> -f <INPUT_FILE> [-s <SUFFIX>] [-e <EPOCHS>]
 ```
 
 Arguments:
