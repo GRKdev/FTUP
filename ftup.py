@@ -107,7 +107,7 @@ def main():
 
 def check_key(key):
     # Checking key if not 51 lenght or starts with sk- and charcaters exit the program, if good -> set api key to openai module
-    print(f"Checking API key format ...")
+    print("Checking API key format ...")
     match = re.search(r"^sk-[a-zA-Z0-9]+$", key)
     if match is None or len(key) != 51:
         raise ValueError(
@@ -119,9 +119,9 @@ def check_key(key):
 
 def check_model(model):
     # checking the model if not exit the program
-    print(f"\nChecking model ...")
+    print("\nChecking model ...")
 
-    if not model in ["bab", "gpt"]:
+    if model not in ["bab", "gpt"]:
         raise ValueError("\nInvalid model name ⚠️\nUsage: 'gpt' or 'bab'")
     else:
         return colored.green(f"- Model {model}")
@@ -129,7 +129,7 @@ def check_model(model):
 
 def check_jsonl_file(file):
     # checking with regex if the name its correct.
-    print(f"\nChecking if jsonl is valid ...")
+    print("\nChecking if jsonl is valid ...")
     csv_file = re.search(r"^\w+\.jsonl$", file)
 
     if csv_file is None:
@@ -265,7 +265,7 @@ def update_ft_job(file_id_name, model, suffix, epoch):
 
 
 def check_jsonl_gpt35(file):
-    print(f"\nChecking if jsonl format is valid for GPT-3.5 training ...")
+    print("\nChecking if jsonl format is valid for GPT-3.5 training ...")
 
     data_path = file
     dataset = []
@@ -329,7 +329,7 @@ def check_jsonl_gpt35(file):
 
 
 def check_jsonl_babbage(file):
-    print(f"\nChecking if jsonl format is valid for Babbage-002 training ...")
+    print("\nChecking if jsonl format is valid for Babbage-002 training ...")
     data_path = file
     dataset = []
     # Load the dataset
