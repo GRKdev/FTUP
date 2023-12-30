@@ -153,10 +153,10 @@ def create_update_jsonl_file(model, file, epoch):
     print("\nUploading jsonl train file ...")
     try:
         # Using OpenAI API to create a training File and storing ID Value.
-        response = openai.File.create(
+        response = openai.files.create(
             file=open(jsonl_file_path, "rb"), purpose="fine-tune"
         )
-        file_id_name = response["id"]
+        file_id_name = response.id
         print(f"- File ID: {colored.green(file_id_name)}")
 
         #  if model is gpt, we check the cost of the training
@@ -164,23 +164,14 @@ def create_update_jsonl_file(model, file, epoch):
             cost_gpt(file, epoch)
 
     # Exceptions we could have, from OpenAI Documentation: https://platform.openai.com/docs/guides/error-codes/python-library-error-types
-    except openai.error.APIError as e:
+
+    except (
+        openai.APIError
+        or openai.APIConnectionError
+        or openai.RateLimitError
+        or openai.AuthenticationError
+    ) as e:
         # Handle API error here, e.g. retry or log
-        sys.exit(e)
-
-    except openai.error.APIConnectionError as e:
-        # Handle connection error here
-        sys.exit(e)
-
-    except openai.error.RateLimitError as e:
-        # Handle rate limit error (we recommend using exponential backoff)
-        sys.exit(e)
-
-    except openai.error.AuthenticationError as e:
-        # Handle Authentication Error
-        sys.exit(f"\n{e} ⚠️")
-    except openai.error.InvalidRequestError as e:
-        # Handle invalid request format file
         sys.exit(e)
 
     return file_id_name
@@ -189,7 +180,7 @@ def create_update_jsonl_file(model, file, epoch):
 def check_for_cancel(job_id):
     keyboard.wait("x")
     try:
-        openai.FineTuningJob.cancel(job_id)
+        openai.fine_tunes.cancel(job_id)
         print("\nFine-tuning job was cancelled by user. ❌")
 
     except Exception as e:
@@ -206,7 +197,7 @@ def update_ft_job(file_id_name, model, suffix, epoch):
     else:
         model = "babbage-002"
 
-    response = openai.FineTuningJob.create(
+    response = openai.fine_tuning.jobs.create(
         # Calling OpenAPI key with file id name from update_jsonl_files and the arguments from command line. Documentation: https://platform.openai.com/docs/api-reference/fine-tuning/create
         training_file=file_id_name,
         model=model,
@@ -216,7 +207,7 @@ def update_ft_job(file_id_name, model, suffix, epoch):
         suffix=suffix,
     )
 
-    id = response["id"]
+    id = response.id
     # Storing Fine Tuning Job Name
 
     print(f"- Fintetuning job id: {colored.green(id)}\n")
@@ -230,9 +221,9 @@ def update_ft_job(file_id_name, model, suffix, epoch):
         # Creating a loop for check the status of the training job until ends, cancelled or failed.
         try:
             # Calling in loop to retriever API and getting the status and Ft final model name if exists. Documentation: https://platform.openai.com/docs/api-reference/fine-tuning/retrieve
-            response_job = openai.FineTuningJob.retrieve(id)
-            status = response_job["status"]
-            ft_model_name = response_job["fine_tuned_model"]
+            response_job = openai.fine_tuning.jobs.retrieve(id)
+            status = response_job.status
+            ft_model_name = response_job.fine_tuned_model
             print(f"\r{' '*50}", end="")
             # Asked the Duck: Printing 50 charcaters to erase the line
             print(f"\rStatus: {status} (Press 'x' to cancel)", end="")
@@ -248,18 +239,17 @@ def update_ft_job(file_id_name, model, suffix, epoch):
                 sys.exit(f"\nFinetuning {colored.red(status)}! ❌\n")
 
         # Code snippets from Documentation OpenAI
-        except openai.error.APIError as e:
+        except openai.APIError as e:
             # Handle API error here, e.g. retry or log
             print(f"OpenAI API returned an API Error: {e}")
-            pass
-        except openai.error.APIConnectionError as e:
+
+        except openai.APIConnectionError as e:
             # Handle connection error here
             print(f"Failed to connect to OpenAI API: {e}")
-            pass
-        except openai.error.RateLimitError as e:
+
+        except openai.RateLimitError as e:
             # Handle rate limit error (we recommend using exponential backoff)
             print(f"OpenAI API request exceeded rate limit: {e}")
-            pass
 
         time.sleep(20)
 
